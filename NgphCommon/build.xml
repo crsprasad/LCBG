@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse.ant.import?>
+<!--
+	File: NGPHCommon project's build file.
+	Author:ISMAIL SHARIFF
+	Version 1.0, 18/AUG/2011
+-->	
+<project name="NGPHCommon" basedir="." default="dist">
+	<property file="build.properties" description="NGPH Common files"/>
+	
+	<!-- ========================================================= -->
+	<!-- Target: init                                              -->
+	<!-- Initialization         								   -->
+	<!-- ========================================================= -->
+	<target name="init">
+		<echo>Building project ${ant.project.name}</echo>
+		<property name="src.path" value="src"/>	
+		<property name="build.dir" value="${dist.dir}/${ant.project.name}/classes"/>
+		<property name="jar.name" value="${ant.project.name}.jar"/>
+		<property name="jar.file" value="${dist.dir}/${jar.name}"/>	
+		
+		<fileset dir="${dist.dir}/CommonLibraries" id="ref-jar_libs" >
+		    <include name="**/*.jar"/>		    
+		</fileset>
+
+		<path id="build.classpath" description="NGPHCommon Project's build class-path">
+			<fileset refid="ref-jar_libs" />			
+		</path>
+		
+		<mkdir dir="${dist.dir}" description="Creates the projects build directory as this build can be invoked independently"/>
+	</target>
+	
+	<!-- ========================================================= -->
+	<!-- Target: compile                                           -->
+	<!-- Compiles the java files in the NGPHCommon project   -->
+	<!-- ========================================================= -->
+	<target name="compile" depends="init" >
+		<mkdir dir="${build.dir}" description="Creates the NGPHCommon project's build directory"/>
+		
+		<!-- Compiles the Java classes -->
+		<javac srcdir="${src.path}" debug="on" destdir="${build.dir}" source="1.6" fork="true" includeantruntime="false">
+			<compilerarg value="-Xlint: all" />
+			<compilerarg value="-Xlint:-serial, -unchecked" />
+			<classpath refid="build.classpath"/>
+		</javac>
+	</target>
+	
+	<!-- ========================================================= -->
+	<!-- Target: dist                                              -->
+	<!-- Builds the NGPHCommon.jar                           -->
+	<!-- ========================================================= -->
+	<target name="dist" depends="compile" description="Builds the NGPHCommon.jar file">
+		<jar basedir="${build.dir}" jarfile="${jar.file}" manifest="${src.path}/META-INF/MANIFEST.MF" />
+	</target>
+</project>
